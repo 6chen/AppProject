@@ -6,7 +6,7 @@ import java.util.Calendar;
 
 import javax.security.auth.SubjectDomainCombiner;
 
-import com.example.p1.R;
+import com.example.appproject.R;
 
 import android.R.integer;
 import android.R.string;
@@ -78,7 +78,7 @@ public class Plus extends Activity
 
 	//dayofweek Checked Array
 	private String dayofweekCheckedString;
-	
+
 	private int[] dayofweekCheckedArr = {0,0,0,0,0,0,0};
 	private int[] beforedayofweek = null;
 	private String insertStartTime = "";
@@ -87,7 +87,7 @@ public class Plus extends Activity
 	private int msgYn;
 	private int msgIndex;
 	private String msgContent;
-	
+
 	private int isFromDB = 0;
 	private int updatedYn = 0;
 	private String beforeTitle, beforeProfessor;
@@ -95,7 +95,7 @@ public class Plus extends Activity
 	private String beforeStartTime, beforeEndTime;
 	private AlarmManager alarmManager;
 	private long oneWeek = (7*24*60*60)*1000;
-	
+
 	//@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -105,46 +105,9 @@ public class Plus extends Activity
 		// This part is used for intent receive value test.
 		Intent getIntent = getIntent();
 		classId = getIntent.getIntExtra("classId",0);
-//		Log.i("test",classId+"");
+		//		Log.i("test",classId+"");
 		
-		//title, professor
-		plus_title = (EditText) findViewById(R.id.plus_title);
-		plus_professor = (EditText) findViewById(R.id.plus_professor);
-
-		//day
-		plus_Sunday = (ToggleButton)findViewById(R.id.plus_Sunday);
-		plus_Monday = (ToggleButton)findViewById(R.id.plus_Monday);
-		plus_Tuesday = (ToggleButton)findViewById(R.id.plus_Tuesday);
-		plus_Wednesday = (ToggleButton)findViewById(R.id.plus_Wednesday);
-		plus_Thursday = (ToggleButton)findViewById(R.id.plus_Thursday);
-		plus_Friday = (ToggleButton)findViewById(R.id.plus_Friday);
-		plus_Saturday = (ToggleButton)findViewById(R.id.plus_Saturday);
-		
-		//Start,Finish time
-		plus_pickTime1 = (Button)findViewById(R.id.plus_pickTime1);
-		plus_pickTime2 = (Button)findViewById(R.id.plus_pickTime2);
-		plus_starttime = (TextView)findViewById(R.id.plus_text1);
-		plus_endtime = (TextView)findViewById(R.id.plus_text2);
-
-		//day
-		tog_1red = (ToggleButton)findViewById(R.id.tog_1red);
-		tog_2hotpink = (ToggleButton)findViewById(R.id.tog_2hotpink);
-		tog_3orange = (ToggleButton)findViewById(R.id.tog_3orange);
-		tog_4lightorange = (ToggleButton)findViewById(R.id.tog_4lightorange);
-		tog_5yellow = (ToggleButton)findViewById(R.id.tog_5yellow);
-
-		//switch
-		plus_switch = (Switch)findViewById(R.id.plus_switch); 
-
-		//spinner
-		plus_spinner = (Spinner) findViewById(R.id.plus_spinner);
-
-		//plus_message
-		plus_message = (EditText)findViewById(R.id.plus_message);
-
-		//Close
-		Close01 = (Button) findViewById(R.id.Close01);
-		Close02 = (Button) findViewById(R.id.Close02);
+		xmlInitial();
 
 		//switch
 		plus_spinner.setVisibility(View.INVISIBLE);
@@ -167,18 +130,18 @@ public class Plus extends Activity
 		tog_4lightorange.setOnCheckedChangeListener(lightorangeON);
 		tog_5yellow.setOnCheckedChangeListener(yellowON);
 
-		
-		
+
+
 		//
 		DBOpenHelper helper = new DBOpenHelper(Plus.this, "classscheduler.db", null, 1);
 		SQLiteDatabase db = helper.getWritableDatabase();
-		
+
 		Cursor resultCursor = db.rawQuery("select * from class where _classid = "+classId, null);
-		
-//		Log.i("database",resultCursor.getCount()+"");
-		
+
+		//		Log.i("database",resultCursor.getCount()+"");
+
 		if (resultCursor.getCount() == 0) {
-			
+
 			//Set dayofweek
 			switch (classId%10) {
 			case 0:
@@ -203,7 +166,7 @@ public class Plus extends Activity
 				plus_Saturday.setChecked(true);
 				break;
 			}
-			
+
 			//set starttime and end time 
 			mHour = classId/10+9;
 			mMinute = 0;
@@ -213,13 +176,13 @@ public class Plus extends Activity
 		}else if (resultCursor.getCount() > 0) {
 			isFromDB = 1;
 			resultCursor.moveToNext();
-			
+
 			beforeTitle = resultCursor.getString(resultCursor.getColumnIndex("_classname"));
 			beforeProfessor = resultCursor.getString(resultCursor.getColumnIndex("_teacher"));
-			
+
 			plus_title.setText(beforeTitle);
 			plus_professor.setText(beforeProfessor);
-			
+
 			int dayofweek = resultCursor.getInt(resultCursor.getColumnIndex("_dayofweek"));
 			switch (dayofweek) {
 			case 0:
@@ -244,27 +207,27 @@ public class Plus extends Activity
 				plus_Saturday.setChecked(true);
 				break;
 			}
-			
+
 			beforedayofweek = dayofweekCheckedArr;
-			
+
 			String startTime = resultCursor.getString(resultCursor.getColumnIndex("_starttime"));
 			String endTime = resultCursor.getString(resultCursor.getColumnIndex("_endtime"));
-			
+
 			beforeStartTime = startTime;
 			beforeEndTime = endTime;
-			
+
 			mHour = Integer.parseInt(startTime.substring(0, 2));
 			mMinute = Integer.parseInt(startTime.substring(2, 4));
 			nHour = Integer.parseInt(endTime.substring(0, 2));
 			nMinute = Integer.parseInt(endTime.substring(2, 4));
 			updateDisplay();
-			
+
 			msgYn = resultCursor.getInt(resultCursor.getColumnIndex("_msgyn"));
-			
+
 			if (msgYn == 1) {
 				plus_switch.setChecked(true);
 				msgIndex = resultCursor.getInt(resultCursor.getColumnIndex("_msgindex"));
-				
+
 				if (msgIndex == 4) {
 					String msgContent = resultCursor.getString(resultCursor.getColumnIndex("_msgcontent"));
 					plus_message.setText(msgContent);
@@ -273,7 +236,7 @@ public class Plus extends Activity
 		}
 		resultCursor.close();
 		db.close();
-		
+
 		plus_pickTime1.setOnClickListener(new View.OnClickListener() 
 		{
 			public void onClick(View v) 
@@ -296,35 +259,35 @@ public class Plus extends Activity
 		{
 			public void onClick(View v) 
 			{		
-				
+
 				subjectTitle = plus_title.getText().toString();
 				subjectProfessor = plus_professor.getText().toString();
-				
+
 				//set starttime and endtime for insert to database
 				if ((mHour+"").length() < 2 ) {
 					insertStartTime += "0"+ mHour ;
 				}else {
 					insertStartTime += mHour;
 				}
-				
+
 				if ((mMinute+"").length() < 2 ) {
 					insertStartTime += "0"+ mMinute ;
 				}else {
 					insertStartTime += mMinute;
 				}
-				
+
 				if ((nHour+"").length() < 2 ) {
 					insertEndTime += "0"+ nHour ;
 				}else {
 					insertEndTime += nHour;
 				}
-				
+
 				if ((nMinute+"").length() < 2 ) {
 					insertEndTime += "0"+ nMinute ;
 				}else {
 					insertEndTime += nMinute;
 				}
-				
+
 				if (plus_switch.isChecked()) {
 					msgYn = 1;
 					if (msgIndex == 4) {
@@ -333,22 +296,22 @@ public class Plus extends Activity
 				}else {
 					msgYn = 0;
 				}
-				
-				
+
+
 				if (isFromDB == 0) { //If isFromDB is 0 then it's a new Class, So it just need to insert the data into DB.
 					DBOpenHelper helper = new DBOpenHelper(Plus.this, "classscheduler.db", null, 1);
 					SQLiteDatabase db = helper.getWritableDatabase();
-					
+
 					for (int i = 0; i < dayofweekCheckedArr.length;i++) {
 						int dayofweek = i;
 						if (dayofweekCheckedArr[dayofweek] != 0) {
-							
+
 							int Y = mHour - 9;
 							classId = Y*10 + dayofweek;
-							
-//							Log.i("classid",""+classId);
-//							Log.i("step","not from db");
-							
+
+							//							Log.i("classid",""+classId);
+							//							Log.i("step","not from db");
+
 							if (msgYn == 0) {
 								db.execSQL("insert into class(_classid, _classname, _teacher, _starttime, _endtime, _dayofweek, _color, _msgyn)"
 										+ " values(" + classId +", '" + subjectTitle +"', '"+ subjectProfessor +"', '" + insertStartTime +"', '" 
@@ -364,9 +327,9 @@ public class Plus extends Activity
 											+ insertEndTime +"', " + dayofweek +", '" + color +"', " + msgYn + ", " + msgIndex + ", '"+ msgContent+"')");
 								}
 							}
-							
+
 							//Set Alarm if this is a new page for creating a new class 
-							
+
 							//Get current time 
 							Calendar curCalendar = Calendar.getInstance();
 							String curTimestamp = "";
@@ -380,7 +343,7 @@ public class Plus extends Activity
 							long curTimeMilli = curCalendar.getTimeInMillis();
 							Log.i("curTimestamp", curTimestamp);
 							Log.i("curTimestampMillinSecond", curTimeMilli+"");
-							
+
 							//Get the start time of class
 							Calendar setStartCalendar = Calendar.getInstance();
 							String setStartTimestamp = "";
@@ -399,7 +362,7 @@ public class Plus extends Activity
 							long setStartTimeMilli = setStartCalendar.getTimeInMillis();
 							Log.i("setStartTimestamp", setStartTimestamp);
 							Log.i("setStartTimestampMillinSecond", setStartTimeMilli+"");
-							
+
 							//Get the end time of class
 							Calendar setEndCalendar = Calendar.getInstance();
 							String setEndTimestamp = "";
@@ -418,93 +381,93 @@ public class Plus extends Activity
 							long setEndTimeMilli = setEndCalendar.getTimeInMillis();
 							Log.i("setStartTimestamp", setEndTimestamp);
 							Log.i("setEndTimestampMillinSecond", setEndTimeMilli+"");
-							
+
 							if (curTimeMilli > setStartTimeMilli) {
 								Log.i("Result","a week later");
-								
+
 								int startAlarmId = classId * 10 + 1;
 								int endAlarmId = classId * 10 + 2;
 								alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-								
+
 								//set alarm of start time
 								Intent intentStart = new Intent(Plus.this, AlarmBroadcastReceiver.class);
 								intentStart.putExtra("ModeCode", 1); //If this is start alarm then the ModeCode is 1
 								PendingIntent startAlarmIntent = PendingIntent.getBroadcast(Plus.this, startAlarmId, intentStart, 0);
-//								alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setStartTimeMilli+oneWeek, oneWeek, startAlarmIntent);
+								//								alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setStartTimeMilli+oneWeek, oneWeek, startAlarmIntent);
 								alarmManager.set(AlarmManager.RTC_WAKEUP, setStartTimeMilli, startAlarmIntent); // this code is for test
 								Log.i("StartAlarmSeted","New");
-								
+
 								//set alarm of end time
 								Intent intentEnd = new Intent(Plus.this, AlarmBroadcastReceiver.class);
 								intentEnd.putExtra("ModeCode", 2);//If this is end alarm then the ModeCode is 2
 								PendingIntent endAlarmIntent = PendingIntent.getBroadcast(Plus.this, endAlarmId, intentEnd, 0);
-//								alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli+oneWeek, oneWeek, endAlarmIntent);
+								//								alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli+oneWeek, oneWeek, endAlarmIntent);
 								alarmManager.set(AlarmManager.RTC_WAKEUP, setEndTimeMilli, endAlarmIntent);// this code is for test
 								Log.i("EndAlarmSeted","New");
-								
+
 							}else {
 								Log.i("Result","this week");
-								
+
 								int startAlarmId = classId * 10 + 1;
 								int endAlarmId = classId * 10 + 2;
 								alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-								
+
 								//set alarm of start time
 								Intent intentStart = new Intent(Plus.this, AlarmBroadcastReceiver.class);
 								intentStart.putExtra("ModeCode", 1); //If this is start alarm then the ModeCode is 1
 								PendingIntent startAlarmIntent = PendingIntent.getBroadcast(Plus.this, startAlarmId, intentStart, 0);
-//								alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setStartTimeMilli, oneWeek, startAlarmIntent);
+								//								alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setStartTimeMilli, oneWeek, startAlarmIntent);
 								alarmManager.set(AlarmManager.RTC_WAKEUP, setStartTimeMilli, startAlarmIntent);// this code is for test
 								Log.i("StartAlarmSeted","New");
-								
+
 								//set alarm of end time
 								Intent intentEnd = new Intent(Plus.this, AlarmBroadcastReceiver.class);
 								intentEnd.putExtra("ModeCode", 2);//If this is end alarm then the ModeCode is 2
 								PendingIntent endAlarmIntent = PendingIntent.getBroadcast(Plus.this, endAlarmId, intentEnd, 0);
-//								alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli, oneWeek, endAlarmIntent);
+								//								alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli, oneWeek, endAlarmIntent);
 								alarmManager.set(AlarmManager.RTC_WAKEUP, setEndTimeMilli, endAlarmIntent);// this code is for test
 								Log.i("EndAlarmSeted","New");
 							}
-							
+
 						}
 					}
-					
+
 					db.close();
 				}else if (isFromDB == 1) {//If isFromDB is 1 then is not a new Class, So we need to know if the data have been changed.
-					
+
 					if (!beforeTitle.equals(subjectTitle) || !beforeProfessor.equals(subjectProfessor)) {
 						updatedYn = 1;
 					}
-					
+
 					if (!Arrays.equals(dayofweekCheckedArr, beforedayofweek)) {
 						updatedYn = 1;
 					}
-					
+
 					if (!beforeStartTime.equals(insertStartTime) || !beforeEndTime.equals(insertEndTime)) {
 						updatedYn = 1;
 					}
-					
-					
-					
+
+
+
 					if (updatedYn == 0) {//If the data have not been changed it just need to finish this page.
 						finish();
-//						Log.i("step","from db, but no update");
+						//						Log.i("step","from db, but no update");
 					}else if (updatedYn == 1) {//If the data have been changed then we need to update the class in DB
 						DBOpenHelper helper = new DBOpenHelper(Plus.this, "classscheduler.db", null, 1);
 						SQLiteDatabase db = helper.getWritableDatabase();
-						
+
 						for (int i = 0; i < dayofweekCheckedArr.length;i++) {
 							int dayofweek = i;
 							if (dayofweekCheckedArr[dayofweek] != 0) {
-								
+
 								int Y = mHour - 9;
 								classId = Y*10 + dayofweek;
-								
-								
-//								Log.i("classid",""+classId);
-//								Log.i("step","from db, and have been updated");
-								
-								
+
+
+								//								Log.i("classid",""+classId);
+								//								Log.i("step","from db, and have been updated");
+
+
 								if (msgYn == 0) {
 									db.execSQL("update class set _classname = '"+ subjectTitle +"', _teacher = '"+ subjectProfessor+"',"
 											+ " _starttime ='"+ insertStartTime+"', _endtime = '"+insertEndTime+"',"
@@ -522,9 +485,9 @@ public class Plus extends Activity
 												+ " _msgindex = "+msgIndex+", _msgcontent = '"+msgContent+"' where _classid = "+ classId + "");
 									}
 								}
-								
+
 								//Set Alarm for Updated class   
-								
+
 								//Get current time 
 								Calendar curCalendar = Calendar.getInstance();
 								String curTimestamp = "";
@@ -538,7 +501,7 @@ public class Plus extends Activity
 								long curTimeMilli = curCalendar.getTimeInMillis();
 								Log.i("curTimestamp", curTimestamp);
 								Log.i("curTimestampMillinSecond", curTimeMilli+"");
-								
+
 								//Get the start time of class
 								Calendar setStartCalendar = Calendar.getInstance();
 								String setStartTimestamp = "";
@@ -557,7 +520,7 @@ public class Plus extends Activity
 								long setStartTimeMilli = setStartCalendar.getTimeInMillis();
 								Log.i("setStartTimestamp", setStartTimestamp);
 								Log.i("setStartTimestampMillinSecond", setStartTimeMilli+"");
-								
+
 								//Get the end time of class
 								Calendar setEndCalendar = Calendar.getInstance();
 								String setEndTimestamp = "";
@@ -576,78 +539,78 @@ public class Plus extends Activity
 								long setEndTimeMilli = setEndCalendar.getTimeInMillis();
 								Log.i("setStartTimestamp", setEndTimestamp);
 								Log.i("setEndTimestampMillinSecond", setEndTimeMilli+"");
-								
+
 								if (curTimeMilli > setStartTimeMilli) {
 									Log.i("Result","a week later");
-									
+
 									int startAlarmId = classId * 10 + 1;
 									int endAlarmId = classId * 10 + 2;
 									alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-									
+
 									//set alarm of start time
 									Intent intentStart = new Intent(Plus.this, AlarmBroadcastReceiver.class);
 									intentStart.putExtra("ModeCode", 1); //If this is start alarm then the ModeCode is 1
 									PendingIntent startAlarmIntent = PendingIntent.getBroadcast(Plus.this, startAlarmId, intentStart, 0);
-									
+
 									//cancel alarm of start time 
-									
-//									alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setStartTimeMilli+oneWeek, oneWeek, startAlarmIntent);
+
+									//									alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setStartTimeMilli+oneWeek, oneWeek, startAlarmIntent);
 									alarmManager.set(AlarmManager.RTC_WAKEUP, setStartTimeMilli, startAlarmIntent); // this code is for test
 									Log.i("StartAlarmSeted","Update");
-									
+
 									//set alarm of end time
 									Intent intentEnd = new Intent(Plus.this, AlarmBroadcastReceiver.class);
 									intentEnd.putExtra("ModeCode", 2);//If this is end alarm then the ModeCode is 2
 									PendingIntent endAlarmIntent = PendingIntent.getBroadcast(Plus.this, endAlarmId, intentEnd, 0);
-									
+
 									//cancel alarm of end time 
-									
-									
-//									alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli+oneWeek, oneWeek, endAlarmIntent);
+
+
+									//									alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli+oneWeek, oneWeek, endAlarmIntent);
 									alarmManager.set(AlarmManager.RTC_WAKEUP, setEndTimeMilli, endAlarmIntent);// this code is for test
 									Log.i("EndAlarmSeted","Update");
-									
+
 								}else {
 									Log.i("Result","this week");
-									
+
 									int startAlarmId = classId * 10 + 1;
 									int endAlarmId = classId * 10 + 2;
 									alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-									
+
 									//set alarm of start time
 									Intent intentStart = new Intent(Plus.this, AlarmBroadcastReceiver.class);
 									intentStart.putExtra("ModeCode", 1); //If this is start alarm then the ModeCode is 1
 									PendingIntent startAlarmIntent = PendingIntent.getBroadcast(Plus.this, startAlarmId, intentStart, 0);
-									
+
 									//cancel alarm of start time 
-									
-									
-//									alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setStartTimeMilli, oneWeek, startAlarmIntent);
+
+
+									//									alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setStartTimeMilli, oneWeek, startAlarmIntent);
 									alarmManager.set(AlarmManager.RTC_WAKEUP, setStartTimeMilli, startAlarmIntent);// this code is for test
 									Log.i("StartAlarmSeted","Update");
-									
+
 									//set alarm of end time
 									Intent intentEnd = new Intent(Plus.this, AlarmBroadcastReceiver.class);
 									intentEnd.putExtra("ModeCode", 2);//If this is end alarm then the ModeCode is 2
 									PendingIntent endAlarmIntent = PendingIntent.getBroadcast(Plus.this, endAlarmId, intentEnd, 0);
-									
+
 									//cancel alarm of end time 
-									
-//									alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli, oneWeek, endAlarmIntent);
+
+									//									alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli, oneWeek, endAlarmIntent);
 									alarmManager.set(AlarmManager.RTC_WAKEUP, setEndTimeMilli, endAlarmIntent);// this code is for test
 									Log.i("EndAlarmSeted","Update");
 								}
-								
-								
-								
+
+
+
 							}
 						}
-						
+
 						db.close();
 					}
 				}
-				
-//				String text = plus_title.getText().toString();
+
+				//				String text = plus_title.getText().toString();
 				Intent dataIntent = new Intent();
 				dataIntent.putExtra("dataIntent",2);//titleEdit.getText()
 				setResult(2,dataIntent);
@@ -676,13 +639,13 @@ public class Plus extends Activity
 
 		spinner.setAdapter(adapter);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
+
 		if (msgIndex != 4) {
 			spinner.setSelection(0);
 		}else {
 			spinner.setSelection(msgIndex);
 		}
-		
+
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener()
 		{
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
@@ -710,7 +673,7 @@ public class Plus extends Activity
 					plus_message.setVisibility(View.VISIBLE);
 					break;
 				}
-				
+
 				msgIndex = pos;
 			}
 
@@ -947,5 +910,49 @@ public class Plus extends Activity
 			plus_message.setVisibility(View.INVISIBLE);
 		}
 	};
+
+	private void xmlInitial(){
+		//XML Object Initialization
+		//title, professor
+		plus_title = (EditText) findViewById(R.id.plus_title);
+		plus_professor = (EditText) findViewById(R.id.plus_professor);
+
+		//day
+		plus_Sunday = (ToggleButton)findViewById(R.id.plus_Sunday);
+		plus_Monday = (ToggleButton)findViewById(R.id.plus_Monday);
+		plus_Tuesday = (ToggleButton)findViewById(R.id.plus_Tuesday);
+		plus_Wednesday = (ToggleButton)findViewById(R.id.plus_Wednesday);
+		plus_Thursday = (ToggleButton)findViewById(R.id.plus_Thursday);
+		plus_Friday = (ToggleButton)findViewById(R.id.plus_Friday);
+		plus_Saturday = (ToggleButton)findViewById(R.id.plus_Saturday);
+
+		//Start,Finish time
+		plus_pickTime1 = (Button)findViewById(R.id.plus_pickTime1);
+		plus_pickTime2 = (Button)findViewById(R.id.plus_pickTime2);
+		plus_starttime = (TextView)findViewById(R.id.plus_text1);
+		plus_endtime = (TextView)findViewById(R.id.plus_text2);
+
+		//day
+		tog_1red = (ToggleButton)findViewById(R.id.tog_1red);
+		tog_2hotpink = (ToggleButton)findViewById(R.id.tog_2hotpink);
+		tog_3orange = (ToggleButton)findViewById(R.id.tog_3orange);
+		tog_4lightorange = (ToggleButton)findViewById(R.id.tog_4lightorange);
+		tog_5yellow = (ToggleButton)findViewById(R.id.tog_5yellow);
+
+		//switch
+		plus_switch = (Switch)findViewById(R.id.plus_switch); 
+
+		//spinner
+		plus_spinner = (Spinner) findViewById(R.id.plus_spinner);
+
+		//plus_message
+		plus_message = (EditText)findViewById(R.id.plus_message);
+
+		//Close
+		Close01 = (Button) findViewById(R.id.Close01);
+		Close02 = (Button) findViewById(R.id.Close02);
+		Close01.setText("Save");
+		Close02.setText("Cancel");
+	}
 }
 

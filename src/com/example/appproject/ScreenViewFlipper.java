@@ -1,6 +1,6 @@
 package com.example.appproject;
 
-import com.example.p1.R;
+import com.example.appproject.R;
 
 import android.content.Context;
 import android.content.Intent;
