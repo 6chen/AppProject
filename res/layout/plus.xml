@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="#FFFFFF">
+
+    
+   	<LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:paddingLeft="70dp"
+         android:paddingRight="70dp"
+         android:paddingTop="70dp" >
+    
+        	<LinearLayout
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:orientation="horizontal" >
+		
+		            <TextView
+		                android:layout_width="match_parent"
+		                android:layout_height="wrap_content"
+		                android:text="Subject   "
+		                android:layout_weight="3"
+		                android:textSize="15sp" />
+		            
+		            <EditText 
+		               android:id="@+id/plus_title"
+		               android:layout_width="match_parent"
+		               android:layout_height="wrap_content"
+		               android:text=""
+		               android:layout_weight="1"
+		               android:textSize="15sp" />
+		       
+		    </LinearLayout>
+		    
+        	
+        	<LinearLayout
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:orientation="horizontal"
+		            android:paddingTop="20dp" >
+		
+		            <TextView
+		                android:layout_width="match_parent"
+		                android:layout_height="wrap_content"
+		                android:text="Teacher   "
+		                android:layout_weight="3"
+		                android:textSize="15sp" />
+		            
+		            <EditText 
+		               android:id="@+id/plus_professor"
+		               android:layout_width="match_parent"
+		               android:layout_height="wrap_content"
+		               android:text=""
+		               android:layout_weight="1"
+		               android:textSize="15sp" />
+		       
+		    </LinearLayout>
+		    
+		    <LinearLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal"
+		        android:paddingTop="40dp" >
+		
+		        <ToggleButton
+		            android:id="@+id/plus_Sunday"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:textOff="Sun"
+		            android:textOn="Sun" 
+		            android:textColor="#FFFFFF"
+		            android:background="@drawable/plus_toggle" />
+		        
+		        <ToggleButton
+		            android:id="@+id/plus_Monday"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:textOff="Mon"
+		            android:textOn="Mon" 
+		            android:textColor="#FFFFFF"
+		            android:background="@drawable/plus_toggle"/>
+		
+		        <ToggleButton
+		            android:id="@+id/plus_Tuesday"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:textOff="Tue"
+		            android:textOn="Tue"
+		            android:textColor="#FFFFFF"		            
+		            android:background="@drawable/plus_toggle" />
+		
+		        <ToggleButton
+		            android:id="@+id/plus_Wednesday"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:background="@drawable/plus_toggle"
+		            android:textColor="#FFFFFF"
+		            android:textOff="Wed"
+		            android:textOn="Wed" />
+		
+		        <ToggleButton
+		            android:id="@+id/plus_Thursday"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:textOff="Thr"
+		            android:textOn="Thr"
+		            android:textColor="#FFFFFF"		          
+		            android:background="@drawable/plus_toggle" />
+		
+		        <ToggleButton
+		            android:id="@+id/plus_Friday"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:textOff="Fri"
+		            android:textOn="Fri"
+		            android:textColor="#FFFFFF"		          
+		            android:background="@drawable/plus_toggle" />
+		
+		        <ToggleButton
+		            android:id="@+id/plus_Saturday"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:textOff="Sat"
+		            android:textOn="Sat"
+		            android:textColor="#FFFFFF"		          
+		            android:background="@drawable/plus_toggle" />
+		
+		        
+		    </LinearLayout>
+		
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal"
+		        android:padding="40dp">
+		
+		        <LinearLayout
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:paddingTop="30dp"
+		            android:paddingRight="5dp"
+		            android:paddingLeft="0dp"
+		            android:orientation="vertical" >
+		
+		           
+		            <Button
+				        android:id="@+id/plus_pickTime1"
+				        android:layout_width="match_parent"
+				        android:layout_height="wrap_content"
+				        android:gravity="center"
+				        android:text="Start Time"
+				        android:background="@drawable/plus_sftime"/>
+			    
+				    <TextView
+				        android:id="@+id/plus_text1"
+				        android:layout_width="match_parent"
+				        android:layout_height="wrap_content"
+				        android:gravity="center"
+				        android:textSize="15sp"
+				        />
+		            
+		        </LinearLayout>
+		
+		        <LinearLayout
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:orientation="vertical"
+		            android:gravity="right"
+		            android:paddingTop="30dp"
+		            android:paddingLeft="5dp"
+		            android:paddingRight="0dp"
+		            android:layout_weight="1" >
+		        
+		            <Button
+					     android:id="@+id/plus_pickTime2"
+					     android:layout_width="match_parent"
+					     android:layout_height="wrap_content"
+					     android:gravity="center"
+					     android:text="Finish Time"
+					     android:background="@drawable/plus_sftime"  />
+				    
+				    <TextView
+				        android:id="@+id/plus_text2"
+				        android:layout_width="match_parent"
+				        android:layout_height="wrap_content"
+				        android:gravity="center"
+				        android:textSize="15sp" />
+		
+			     </LinearLayout>
+		   
+		    </LinearLayout>
+		    
+		
+		    <LinearLayout
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal" 
+		        
+		        >
+		        
+		        <ToggleButton
+		            android:id="@+id/tog_1red"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:textOff=""
+		            android:textOn="" 
+		            android:background="@drawable/plus_tog_1red"/>
+		        
+		        <ToggleButton
+		            android:id="@+id/tog_2hotpink"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:textOff=""
+		            android:textOn="" 
+		            android:background="@drawable/plus_tog_2hotpink"/>
+		        		        
+		        <ToggleButton
+		            android:id="@+id/tog_3orange"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:textOff=""
+		            android:textOn="" 
+		            android:background="@drawable/plus_tog_3orange"/>
+		        
+		        <ToggleButton
+		            android:id="@+id/tog_4lightorange"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:textOff=""
+		            android:textOn="" 
+		            android:background="@drawable/plus_tog_4lightorange"/>
+		        
+		        <ToggleButton
+		            android:id="@+id/tog_5yellow"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:textOff=""
+		            android:textOn="" 
+		            android:background="@drawable/plus_tog_5yellow"/>
+
+		        
+		        
+		        
+		    </LinearLayout>
+		
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical" 
+		        android:paddingTop="20dp">
+		
+		        <Switch
+		            android:id="@+id/plus_switch"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:text="Do you want to send a message?" />
+		        
+			    <Spinner
+			        android:id="@+id/plus_spinner"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:paddingTop="10dp" />
+	
+			    <EditText
+			        android:id="@+id/plus_message"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:paddingTop="10dp"
+			        android:hint="보내실 문자 메세지를 직접 입력해주세요" />
+		
+		    </LinearLayout>
+		
+	 </LinearLayout>
+   	
+	 <LinearLayout
+	       android:layout_width="match_parent"
+	       android:layout_height="match_parent"
+	       android:orientation="horizontal"
+	       android:gravity="bottom" >
+	        
+	       <Button 
+	             android:id="@+id/Close01"
+	             android:layout_width="match_parent"
+	             android:layout_height="wrap_content"
+	             android:layout_weight="1"
+	             android:text=" 저장 "
+	             android:background="@drawable/plus_close" />
+	     
+	       <Button 
+	           android:id="@+id/Close02"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:text="취소"
+	            android:background="@drawable/plus_close"
+	             />
+	       
+	 </LinearLayout>
+   
+
+</LinearLayout>
