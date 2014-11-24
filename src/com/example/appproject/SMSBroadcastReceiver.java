@@ -22,8 +22,8 @@ public class SMSBroadcastReceiver extends BroadcastReceiver{
 			
 		
 //			PendingIntent pIntent = PendingIntent.getActivities(this, 0, GetTelephone.class,0);
-			SmsManager sms = SmsManager.getDefault();
-			sms.sendTextMessage(phoneNumber, null, "Sorry, I am in class now", null, null);  
+//			SmsManager sms = SmsManager.getDefault();
+//			sms.sendTextMessage(phoneNumber, null, "Sorry, I am in class now", null, null);  
 		}
 	}
 	

@@ -40,17 +40,14 @@ import android.widget.ToggleButton;
 
 public class Plus extends Activity 
 {
-
-	EditText plus_title,plus_professor;
-
-	ToggleButton plus_Sunday, plus_Monday, plus_Tuesday, plus_Wednesday, plus_Thursday, plus_Friday, plus_Saturday;
-	ToggleButton tog_1red, tog_2hotpink, tog_3orange, tog_4lightorange, tog_5yellow;
-
-	int classId;
+	private EditText plus_title,plus_professor;
+	private ToggleButton plus_Sunday, plus_Monday, plus_Tuesday, plus_Wednesday, plus_Thursday, plus_Friday, plus_Saturday;
+	private ToggleButton tog_1red, tog_2hotpink, tog_3orange, tog_4lightorange, tog_5yellow;
+	private int classId;
 
 	//Start,Finish Time
-	TextView plus_starttime, plus_endtime;
-	Button plus_pickTime1, plus_pickTime2;
+	private TextView plus_starttime, plus_endtime;
+	private Button plus_pickTime1, plus_pickTime2;
 
 	private int nHour;
 	private int nMinute;
@@ -62,23 +59,22 @@ public class Plus extends Activity
 	static final int TIME_DIALOG_ID1 = 2;
 
 	//switch
-	Switch plus_switch;
+	private Switch plus_switch;
 
 	//spinner
-	Spinner plus_spinner;
+	private Spinner plus_spinner;
 
 	//select
-	EditText plus_message;
+	private EditText plus_message;
 
 	//Close
-	Button Close01, Close02; 
+	private Button Close01, Close02; 
 
 	//SubjectTitle
 	private String subjectTitle, subjectProfessor;
 
 	//dayofweek Checked Array
 	private String dayofweekCheckedString;
-
 	private int[] dayofweekCheckedArr = {0,0,0,0,0,0,0};
 	private int[] beforedayofweek = null;
 	private String insertStartTime = "";
@@ -96,76 +92,28 @@ public class Plus extends Activity
 	private AlarmManager alarmManager;
 	private long oneWeek = (7*24*60*60)*1000;
 
+	private Calendar curCalendar, setStartCalendar, setEndCalendar;
+
 	//@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.plus);
 
-		// This part is used for intent receive value test.
+		//This part is used for intent receive value test.
 		Intent getIntent = getIntent();
 		classId = getIntent.getIntExtra("classId",0);
-		//		Log.i("test",classId+"");
-		
+
 		xmlInitial();
-
-		//switch
-		plus_spinner.setVisibility(View.INVISIBLE);
-		plus_message.setVisibility(View.INVISIBLE);
-
-		//ChangeListener
-		plus_switch.setOnCheckedChangeListener(SWITCH);
-
-		plus_Sunday.setOnCheckedChangeListener(sunON);
-		plus_Monday.setOnCheckedChangeListener(monON);
-		plus_Tuesday.setOnCheckedChangeListener(tueON);
-		plus_Wednesday.setOnCheckedChangeListener(wedON);
-		plus_Thursday.setOnCheckedChangeListener(thrON);
-		plus_Friday.setOnCheckedChangeListener(friON);
-		plus_Saturday.setOnCheckedChangeListener(satON);
-
-		tog_1red.setOnCheckedChangeListener(redON);
-		tog_2hotpink.setOnCheckedChangeListener(hotpinkON);
-		tog_3orange.setOnCheckedChangeListener(orangeON);
-		tog_4lightorange.setOnCheckedChangeListener(lightorangeON);
-		tog_5yellow.setOnCheckedChangeListener(yellowON);
-
-
 
 		//
 		DBOpenHelper helper = new DBOpenHelper(Plus.this, "classscheduler.db", null, 1);
 		SQLiteDatabase db = helper.getWritableDatabase();
-
 		Cursor resultCursor = db.rawQuery("select * from class where _classid = "+classId, null);
 
-		//		Log.i("database",resultCursor.getCount()+"");
-
 		if (resultCursor.getCount() == 0) {
-
 			//Set dayofweek
-			switch (classId%10) {
-			case 0:
-				plus_Sunday.setChecked(true);
-				break;
-			case 1:
-				plus_Monday.setChecked(true);
-				break;
-			case 2:
-				plus_Tuesday.setChecked(true);
-				break;
-			case 3:
-				plus_Wednesday.setChecked(true);
-				break;
-			case 4:
-				plus_Thursday.setChecked(true);
-				break;
-			case 5:
-				plus_Friday.setChecked(true);
-				break;
-			case 6:
-				plus_Saturday.setChecked(true);
-				break;
-			}
+			dayofweekInitial(classId%10);
 
 			//set starttime and end time 
 			mHour = classId/10+9;
@@ -184,29 +132,7 @@ public class Plus extends Activity
 			plus_professor.setText(beforeProfessor);
 
 			int dayofweek = resultCursor.getInt(resultCursor.getColumnIndex("_dayofweek"));
-			switch (dayofweek) {
-			case 0:
-				plus_Sunday.setChecked(true);
-				break;
-			case 1:
-				plus_Monday.setChecked(true);
-				break;
-			case 2:
-				plus_Tuesday.setChecked(true);
-				break;
-			case 3:
-				plus_Wednesday.setChecked(true);
-				break;
-			case 4:
-				plus_Thursday.setChecked(true);
-				break;
-			case 5:
-				plus_Friday.setChecked(true);
-				break;
-			case 6:
-				plus_Saturday.setChecked(true);
-				break;
-			}
+			dayofweekInitial(dayofweek);
 
 			beforedayofweek = dayofweekCheckedArr;
 
@@ -253,13 +179,11 @@ public class Plus extends Activity
 			}
 		});
 
-
-
+		//Save Button Event
 		Close01.setOnClickListener(new View.OnClickListener() 
 		{
 			public void onClick(View v) 
 			{		
-
 				subjectTitle = plus_title.getText().toString();
 				subjectProfessor = plus_professor.getText().toString();
 
@@ -297,7 +221,6 @@ public class Plus extends Activity
 					msgYn = 0;
 				}
 
-
 				if (isFromDB == 0) { //If isFromDB is 0 then it's a new Class, So it just need to insert the data into DB.
 					DBOpenHelper helper = new DBOpenHelper(Plus.this, "classscheduler.db", null, 1);
 					SQLiteDatabase db = helper.getWritableDatabase();
@@ -308,9 +231,6 @@ public class Plus extends Activity
 
 							int Y = mHour - 9;
 							classId = Y*10 + dayofweek;
-
-							//							Log.i("classid",""+classId);
-							//							Log.i("step","not from db");
 
 							if (msgYn == 0) {
 								db.execSQL("insert into class(_classid, _classname, _teacher, _starttime, _endtime, _dayofweek, _color, _msgyn)"
@@ -331,53 +251,19 @@ public class Plus extends Activity
 							//Set Alarm if this is a new page for creating a new class 
 
 							//Get current time 
-							Calendar curCalendar = Calendar.getInstance();
-							String curTimestamp = "";
-							curTimestamp += curCalendar.get(Calendar.YEAR)+"-";
-							curTimestamp += (curCalendar.get(Calendar.MONTH)+1)+"-";
-							curTimestamp += curCalendar.get(Calendar.DAY_OF_MONTH)+" ";
-							curTimestamp += curCalendar.get(Calendar.HOUR_OF_DAY)+":";
-							curTimestamp += curCalendar.get(Calendar.MINUTE)+":";
-							curTimestamp += curCalendar.get(Calendar.SECOND)+":";
-							curTimestamp += curCalendar.get(Calendar.MILLISECOND)+"";
+							String curTimestamp = getCurrentTimestamp();
 							long curTimeMilli = curCalendar.getTimeInMillis();
 							Log.i("curTimestamp", curTimestamp);
 							Log.i("curTimestampMillinSecond", curTimeMilli+"");
 
 							//Get the start time of class
-							Calendar setStartCalendar = Calendar.getInstance();
-							String setStartTimestamp = "";
-							setStartCalendar.set(Calendar.DAY_OF_WEEK, dayofweek+1);
-							setStartCalendar.set(Calendar.HOUR_OF_DAY, mHour);
-							setStartCalendar.set(Calendar.MINUTE, mMinute);
-							setStartCalendar.set(Calendar.SECOND, 0);
-							setStartCalendar.set(Calendar.MILLISECOND, 0);
-							setStartTimestamp += setStartCalendar.get(Calendar.YEAR)+"-";
-							setStartTimestamp += (setStartCalendar.get(Calendar.MONTH)+1)+"-";
-							setStartTimestamp += setStartCalendar.get(Calendar.DAY_OF_MONTH)+" ";
-							setStartTimestamp += setStartCalendar.get(Calendar.HOUR_OF_DAY)+":";
-							setStartTimestamp += setStartCalendar.get(Calendar.MINUTE)+":";
-							setStartTimestamp += setStartCalendar.get(Calendar.SECOND)+":";
-							setStartTimestamp += setStartCalendar.get(Calendar.MILLISECOND)+"";
+							String setStartTimestamp = getSetStartTimestamp(dayofweek, mHour, mMinute);
 							long setStartTimeMilli = setStartCalendar.getTimeInMillis();
 							Log.i("setStartTimestamp", setStartTimestamp);
 							Log.i("setStartTimestampMillinSecond", setStartTimeMilli+"");
 
 							//Get the end time of class
-							Calendar setEndCalendar = Calendar.getInstance();
-							String setEndTimestamp = "";
-							setEndCalendar.set(Calendar.DAY_OF_WEEK, dayofweek+1);
-							setEndCalendar.set(Calendar.HOUR_OF_DAY, nHour);
-							setEndCalendar.set(Calendar.MINUTE, nMinute);
-							setEndCalendar.set(Calendar.SECOND, 0);
-							setEndCalendar.set(Calendar.MILLISECOND, 0);
-							setEndTimestamp += setEndCalendar.get(Calendar.YEAR)+"-";
-							setEndTimestamp += (setEndCalendar.get(Calendar.MONTH)+1)+"-";
-							setEndTimestamp += setEndCalendar.get(Calendar.DAY_OF_MONTH)+" ";
-							setEndTimestamp += setEndCalendar.get(Calendar.HOUR_OF_DAY)+":";
-							setEndTimestamp += setEndCalendar.get(Calendar.MINUTE)+":";
-							setEndTimestamp += setEndCalendar.get(Calendar.SECOND)+":";
-							setEndTimestamp += setEndCalendar.get(Calendar.MILLISECOND)+"";
+							String setEndTimestamp = getSetEndTimestamp(dayofweek, mHour, mMinute);
 							long setEndTimeMilli = setEndCalendar.getTimeInMillis();
 							Log.i("setStartTimestamp", setEndTimestamp);
 							Log.i("setEndTimestampMillinSecond", setEndTimeMilli+"");
@@ -393,7 +279,7 @@ public class Plus extends Activity
 								Intent intentStart = new Intent(Plus.this, AlarmBroadcastReceiver.class);
 								intentStart.putExtra("ModeCode", 1); //If this is start alarm then the ModeCode is 1
 								PendingIntent startAlarmIntent = PendingIntent.getBroadcast(Plus.this, startAlarmId, intentStart, 0);
-								//								alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setStartTimeMilli+oneWeek, oneWeek, startAlarmIntent);
+								//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setStartTimeMilli+oneWeek, oneWeek, startAlarmIntent);
 								alarmManager.set(AlarmManager.RTC_WAKEUP, setStartTimeMilli, startAlarmIntent); // this code is for test
 								Log.i("StartAlarmSeted","New");
 
@@ -401,7 +287,7 @@ public class Plus extends Activity
 								Intent intentEnd = new Intent(Plus.this, AlarmBroadcastReceiver.class);
 								intentEnd.putExtra("ModeCode", 2);//If this is end alarm then the ModeCode is 2
 								PendingIntent endAlarmIntent = PendingIntent.getBroadcast(Plus.this, endAlarmId, intentEnd, 0);
-								//								alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli+oneWeek, oneWeek, endAlarmIntent);
+								//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli+oneWeek, oneWeek, endAlarmIntent);
 								alarmManager.set(AlarmManager.RTC_WAKEUP, setEndTimeMilli, endAlarmIntent);// this code is for test
 								Log.i("EndAlarmSeted","New");
 
@@ -489,53 +375,19 @@ public class Plus extends Activity
 								//Set Alarm for Updated class   
 
 								//Get current time 
-								Calendar curCalendar = Calendar.getInstance();
-								String curTimestamp = "";
-								curTimestamp += curCalendar.get(Calendar.YEAR)+"-";
-								curTimestamp += (curCalendar.get(Calendar.MONTH)+1)+"-";
-								curTimestamp += curCalendar.get(Calendar.DAY_OF_MONTH)+" ";
-								curTimestamp += curCalendar.get(Calendar.HOUR_OF_DAY)+":";
-								curTimestamp += curCalendar.get(Calendar.MINUTE)+":";
-								curTimestamp += curCalendar.get(Calendar.SECOND)+":";
-								curTimestamp += curCalendar.get(Calendar.MILLISECOND)+"";
+								String curTimestamp = getCurrentTimestamp();
 								long curTimeMilli = curCalendar.getTimeInMillis();
 								Log.i("curTimestamp", curTimestamp);
 								Log.i("curTimestampMillinSecond", curTimeMilli+"");
 
 								//Get the start time of class
-								Calendar setStartCalendar = Calendar.getInstance();
-								String setStartTimestamp = "";
-								setStartCalendar.set(Calendar.DAY_OF_WEEK, dayofweek+1);
-								setStartCalendar.set(Calendar.HOUR_OF_DAY, mHour);
-								setStartCalendar.set(Calendar.MINUTE, mMinute);
-								setStartCalendar.set(Calendar.SECOND, 0);
-								setStartCalendar.set(Calendar.MILLISECOND, 0);
-								setStartTimestamp += setStartCalendar.get(Calendar.YEAR)+"-";
-								setStartTimestamp += (setStartCalendar.get(Calendar.MONTH)+1)+"-";
-								setStartTimestamp += setStartCalendar.get(Calendar.DAY_OF_MONTH)+" ";
-								setStartTimestamp += setStartCalendar.get(Calendar.HOUR_OF_DAY)+":";
-								setStartTimestamp += setStartCalendar.get(Calendar.MINUTE)+":";
-								setStartTimestamp += setStartCalendar.get(Calendar.SECOND)+":";
-								setStartTimestamp += setStartCalendar.get(Calendar.MILLISECOND)+"";
+								String setStartTimestamp = getSetStartTimestamp(dayofweek, mHour, mMinute);
 								long setStartTimeMilli = setStartCalendar.getTimeInMillis();
 								Log.i("setStartTimestamp", setStartTimestamp);
 								Log.i("setStartTimestampMillinSecond", setStartTimeMilli+"");
 
 								//Get the end time of class
-								Calendar setEndCalendar = Calendar.getInstance();
-								String setEndTimestamp = "";
-								setEndCalendar.set(Calendar.DAY_OF_WEEK, dayofweek+1);
-								setEndCalendar.set(Calendar.HOUR_OF_DAY, nHour);
-								setEndCalendar.set(Calendar.MINUTE, nMinute);
-								setEndCalendar.set(Calendar.SECOND, 0);
-								setEndCalendar.set(Calendar.MILLISECOND, 0);
-								setEndTimestamp += setEndCalendar.get(Calendar.YEAR)+"-";
-								setEndTimestamp += (setEndCalendar.get(Calendar.MONTH)+1)+"-";
-								setEndTimestamp += setEndCalendar.get(Calendar.DAY_OF_MONTH)+" ";
-								setEndTimestamp += setEndCalendar.get(Calendar.HOUR_OF_DAY)+":";
-								setEndTimestamp += setEndCalendar.get(Calendar.MINUTE)+":";
-								setEndTimestamp += setEndCalendar.get(Calendar.SECOND)+":";
-								setEndTimestamp += setEndCalendar.get(Calendar.MILLISECOND)+"";
+								String setEndTimestamp = getSetEndTimestamp(dayofweek, mHour, mMinute);
 								long setEndTimeMilli = setEndCalendar.getTimeInMillis();
 								Log.i("setStartTimestamp", setEndTimestamp);
 								Log.i("setEndTimestampMillinSecond", setEndTimeMilli+"");
@@ -596,16 +448,12 @@ public class Plus extends Activity
 
 									//cancel alarm of end time 
 
-									//									alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli, oneWeek, endAlarmIntent);
+									//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, setEndTimeMilli, oneWeek, endAlarmIntent);
 									alarmManager.set(AlarmManager.RTC_WAKEUP, setEndTimeMilli, endAlarmIntent);// this code is for test
 									Log.i("EndAlarmSeted","Update");
 								}
-
-
-
 							}
 						}
-
 						db.close();
 					}
 				}
@@ -687,7 +535,6 @@ public class Plus extends Activity
 
 	}
 
-
 	//day Toggle
 	public ToggleButton.OnCheckedChangeListener sunON = new Switch.OnCheckedChangeListener(){
 		public void onCheckedChanged(CompoundButton cb, boolean isChecking){
@@ -703,7 +550,6 @@ public class Plus extends Activity
 			}
 		}
 	};
-
 
 	public ToggleButton.OnCheckedChangeListener monON = new Switch.OnCheckedChangeListener(){
 		public void onCheckedChanged(CompoundButton cb, boolean isChecking){
@@ -750,7 +596,6 @@ public class Plus extends Activity
 		}
 	};
 
-
 	public ToggleButton.OnCheckedChangeListener thrON = new Switch.OnCheckedChangeListener(){
 		public void onCheckedChanged(CompoundButton cb, boolean isChecking){
 			if(isChecking)
@@ -765,7 +610,6 @@ public class Plus extends Activity
 			}
 		}
 	};
-
 
 	public ToggleButton.OnCheckedChangeListener friON = new Switch.OnCheckedChangeListener(){
 		public void onCheckedChanged(CompoundButton cb, boolean isChecking){
@@ -797,14 +641,12 @@ public class Plus extends Activity
 		}
 	};
 
-
 	//�ؽ�Ʈ�� ����
 	private void updateDisplay()
 	{
 		plus_starttime.setText(String.format("%d hour %d min",  mHour, mMinute));
 		plus_endtime.setText(String.format("%d hour %d min",  nHour, nMinute));
 	}
-
 
 	//TimePicker ������
 	private TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener()
@@ -828,7 +670,6 @@ public class Plus extends Activity
 			updateDisplay();
 		}  
 	};
-
 
 	@Override
 	protected Dialog onCreateDialog(int id) 
@@ -889,8 +730,6 @@ public class Plus extends Activity
 			{ tog_5yellow.setBackgroundResource(R.drawable.plus_tog_5yellow);}
 		}
 	};
-
-
 
 	//Switch
 	public Switch.OnCheckedChangeListener SWITCH = new Switch.OnCheckedChangeListener()
@@ -953,6 +792,102 @@ public class Plus extends Activity
 		Close02 = (Button) findViewById(R.id.Close02);
 		Close01.setText("Save");
 		Close02.setText("Cancel");
+
+		//switch
+		plus_spinner.setVisibility(View.INVISIBLE);
+		plus_message.setVisibility(View.INVISIBLE);
+
+		//ChangeListener
+		plus_switch.setOnCheckedChangeListener(SWITCH);
+
+		plus_Sunday.setOnCheckedChangeListener(sunON);
+		plus_Monday.setOnCheckedChangeListener(monON);
+		plus_Tuesday.setOnCheckedChangeListener(tueON);
+		plus_Wednesday.setOnCheckedChangeListener(wedON);
+		plus_Thursday.setOnCheckedChangeListener(thrON);
+		plus_Friday.setOnCheckedChangeListener(friON);
+		plus_Saturday.setOnCheckedChangeListener(satON);
+
+		tog_1red.setOnCheckedChangeListener(redON);
+		tog_2hotpink.setOnCheckedChangeListener(hotpinkON);
+		tog_3orange.setOnCheckedChangeListener(orangeON);
+		tog_4lightorange.setOnCheckedChangeListener(lightorangeON);
+		tog_5yellow.setOnCheckedChangeListener(yellowON);
+	}
+
+	private String getCurrentTimestamp(){
+		curCalendar = Calendar.getInstance();
+		String curTimestamp = "";
+		curTimestamp += curCalendar.get(Calendar.YEAR)+"-";
+		curTimestamp += (curCalendar.get(Calendar.MONTH)+1)+"-";
+		curTimestamp += curCalendar.get(Calendar.DAY_OF_MONTH)+" ";
+		curTimestamp += curCalendar.get(Calendar.HOUR_OF_DAY)+":";
+		curTimestamp += curCalendar.get(Calendar.MINUTE)+":";
+		curTimestamp += curCalendar.get(Calendar.SECOND)+":";
+		curTimestamp += curCalendar.get(Calendar.MILLISECOND)+"";
+		return curTimestamp;
+	}
+
+	private String getSetStartTimestamp(int dayofweek, int mHour, int mMinute){
+		setStartCalendar = Calendar.getInstance();
+		String setStartTimestamp = "";
+		setStartCalendar.set(Calendar.DAY_OF_WEEK, dayofweek+1);
+		setStartCalendar.set(Calendar.HOUR_OF_DAY, mHour);
+		setStartCalendar.set(Calendar.MINUTE, mMinute);
+		setStartCalendar.set(Calendar.SECOND, 0);
+		setStartCalendar.set(Calendar.MILLISECOND, 0);
+		setStartTimestamp += setStartCalendar.get(Calendar.YEAR)+"-";
+		setStartTimestamp += (setStartCalendar.get(Calendar.MONTH)+1)+"-";
+		setStartTimestamp += setStartCalendar.get(Calendar.DAY_OF_MONTH)+" ";
+		setStartTimestamp += setStartCalendar.get(Calendar.HOUR_OF_DAY)+":";
+		setStartTimestamp += setStartCalendar.get(Calendar.MINUTE)+":";
+		setStartTimestamp += setStartCalendar.get(Calendar.SECOND)+":";
+		setStartTimestamp += setStartCalendar.get(Calendar.MILLISECOND)+"";
+		return setStartTimestamp;
+	}
+
+	private String getSetEndTimestamp(int dayofweek, int mHour, int mMinute){
+		setEndCalendar = Calendar.getInstance();
+		String setEndTimestamp = "";
+		setEndCalendar.set(Calendar.DAY_OF_WEEK, dayofweek+1);
+		setEndCalendar.set(Calendar.HOUR_OF_DAY, nHour);
+		setEndCalendar.set(Calendar.MINUTE, nMinute);
+		setEndCalendar.set(Calendar.SECOND, 0);
+		setEndCalendar.set(Calendar.MILLISECOND, 0);
+		setEndTimestamp += setEndCalendar.get(Calendar.YEAR)+"-";
+		setEndTimestamp += (setEndCalendar.get(Calendar.MONTH)+1)+"-";
+		setEndTimestamp += setEndCalendar.get(Calendar.DAY_OF_MONTH)+" ";
+		setEndTimestamp += setEndCalendar.get(Calendar.HOUR_OF_DAY)+":";
+		setEndTimestamp += setEndCalendar.get(Calendar.MINUTE)+":";
+		setEndTimestamp += setEndCalendar.get(Calendar.SECOND)+":";
+		setEndTimestamp += setEndCalendar.get(Calendar.MILLISECOND)+"";
+		return setEndTimestamp;
+	}
+	
+	private void dayofweekInitial(int dayofweek){
+		switch (dayofweek) {
+		case 0:
+			plus_Sunday.setChecked(true);
+			break;
+		case 1:
+			plus_Monday.setChecked(true);
+			break;
+		case 2:
+			plus_Tuesday.setChecked(true);
+			break;
+		case 3:
+			plus_Wednesday.setChecked(true);
+			break;
+		case 4:
+			plus_Thursday.setChecked(true);
+			break;
+		case 5:
+			plus_Friday.setChecked(true);
+			break;
+		case 6:
+			plus_Saturday.setChecked(true);
+			break;
+		}
 	}
 }
 
